@@ -31,8 +31,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
     }
 
 
-        // Internal functions
-
+        // Internal function
         // Return a summary
         function plugin_counter_get_count($page)
         {
@@ -43,7 +42,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             if (! isset($default))
                 $default = array(
                     'total'     => 0,
-                    'date'      => $this->get_date('Y/m/d'),
+                    'date'      => date('Y/m/d'),
                     'today'     => 0,
                     'yesterday' => 0,
                     'ip'        => '');
@@ -74,7 +73,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             // Anothoer day?
             if ($counters[$page]['date'] != $default['date']) {
                 $modify = TRUE;
-                $is_yesterday = ($counters[$page]['date'] == $this->get_date('Y/m/d', UTIME - 24 * 60 * 60));
+                $is_yesterday = ($counters[$page]['date'] == date('Y/m/d', CURRENT - 24 * 60 * 60));
                 $counters[$page]['ip']        = $_SERVER['REMOTE_ADDR'];
                 $counters[$page]['date']      = $default['date'];
                 $counters[$page]['yesterday'] = $is_yesterday ? $counters[$page]['today'] : 0;
@@ -105,16 +104,6 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             return $counters[$page];
         }
 
-        // Get the date
-        function get_date($format, $timestamp = NULL)
-        {
-            $format = preg_replace('/(?<!\\\)T/',
-                preg_replace('/(.)/', '\\\$1', ZONE), $format);
-
-            $time = ZONETIME + (($timestamp !== NULL) ? $timestamp : UTIME);
-
-            return date($format, $time);
-        }
 
     //Syntax: {{counter|total(default), today, or yesterday|texts following the number (when it is 0 or 1)|texts following the number (when it is 2 or more)}}
     //The texts following the number are not required (If entered just {{counter|today or yesterday or total}} or {{counter}}, this will return only the number)
@@ -134,16 +123,14 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         // Counter file's suffix
         define('PLUGIN_COUNTER_SUFFIX', '.count');
 
-        // UTIME ... universal time
-        define('UTIME', time());
-
         // Where the directory for counter files is?
         define('COUNTER_DIR', DOKU_PLUGIN . 'accscounter/log/');
 
         // Get the time zone from conf (if null, it will use the default setting on your server)
-        date_default_timezone_set($this->getConf('timezone'));
-        define('ZONE', date('T'));
-        define('ZONETIME', date('Z'));
+        if ($this->getConf('timezone') != '')  date_default_timezone_set($this->getConf('timezone'));
+
+        // Get current time (local)
+        define('CURRENT', time());
 
 
         // Main process

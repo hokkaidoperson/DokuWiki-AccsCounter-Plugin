@@ -31,19 +31,7 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
         return 300; // after accscounter_counter
     }
 
-        // Internal functions
-
-        // Get the date
-        function get_date($format, $timestamp = NULL)
-        {
-            $format = preg_replace('/(?<!\\\)T/',
-                preg_replace('/(.)/', '\\\$1', ZONE), $format);
-
-            $time = ZONETIME + (($timestamp !== NULL) ? $timestamp : UTIME);
-
-            return date($format, $time);
-        }
-
+        // Internal function
         // Get a page list of this wiki
         function get_existpages($dir = DATA_DIR, $ext = '.txt')
         {
@@ -84,13 +72,11 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
         // Where the directory for counter files is?
         define('COUNTER_DIR', DOKU_PLUGIN . 'accscounter/log/');
 
-        // UTIME ... universal time
-        define('UTIME', time());
-
         // Get the time zone from conf (if null, it will use the default setting on your server)
-        date_default_timezone_set($this->getConf('timezone'));
-        define('ZONE', date('T'));
-        define('ZONETIME', date('Z'));
+        if ($this->getConf('timezone') != '') date_default_timezone_set($this->getConf('timezone'));
+
+        // Get current time (local)
+        define('CURRENT', time());
 
 
         global $INFO;
@@ -105,11 +91,11 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
         case 'allperiod': $period = 'allperiod';
             break;
         case 'today'    : $period = 'today';
-            $today = $this->get_date('Y/m/d');
+            $today = date('Y/m/d');
             break;
         case 'yesterday': $period = 'yesterday';
-            $yesterday = $this->get_date('Y/m/d', UTIME - 24 * 60 * 60);
-            $thisday = $this->get_date('Y/m/d');
+            $yesterday = date('Y/m/d', CURRENT - 24 * 60 * 60);
+            $thisday = date('Y/m/d');
             break;
         default:
             $renderer->doc .= htmlspecialchars($this->getLang('err3'));
