@@ -55,6 +55,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             $modify = FALSE;
 
             // Open
+            if (!file_exists(COUNTER_DIR)) mkdir(COUNTER_DIR);
             $file = COUNTER_DIR . urlencode($page) . PLUGIN_COUNTER_SUFFIX;
             touch($file);
             $fp = @fopen($file, 'r+');
