@@ -1,7 +1,7 @@
 base accscounter
 author HokkaidoPerson
 email dosankomali@yahoo.co.jp
-date 2018-08-08
+date 2018-08-29
 name Access Counter and Popularity Plugin
 desc Export the number of those who visited a specified page in your wiki today, yesterday, or in whole period.  You can also show the list of the popularity according to the log data taken by the plugin.  This plugin is ported from those of PukiWiki (with some customizing).
 url http://www.dokuwiki.org/plugin:accscounter
