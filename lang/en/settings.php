@@ -1,3 +1,17 @@
 <?php
- 
+
 $lang['timezone'] = 'Timezone used to judge changing of the day (if empty, the timezone set to the server will be used.  You can specify one of IDs in <a href="http://php.net/manual/en/timezones.php" target="_blank">"List of Supported Timezones" at PHP Manual (click to open a new window with the page)</a>.)';
+$lang['excludeMgAndSp'] = 'Don\'t count managers and superusers? (see config "<a href="#config___manager">manager</a>" and "<a href="#config___superuser">superuser</a>")';
+$lang['exclusionList'] = 'IPs and remote hosts that will be excluded<br>The plugin don\'t count users with these IPs and remote hosts.  This list will be useful if your website has many accesses by robot(s) from specified IP(s) and remote host(s).<br>The plugin gets remote hosts by IPs reverse lookup (gethostbyaddr).<br>Enter one IP or remote host per line.<br>Wildcards available:<br>? = one character (an alphanumeric character, a dot ".", or a hyphen "-")<br>* = one or more characters (alphanumeric characters, dots ".", or hyphens "-")<br>! = one character (a numeral)<br>~ = one or more characters (numerals)<br><br>e.g.: "123.456.???.123" -> 123.456.789.123, etc. (123.456.78.123 won\'t be excluded)<br>e.g.: "*.example.com" -> 123.456.789.123.example.com, 1-2-3-4.rooter.example.com, etc.';
+$lang['reverseLookupFailed'] = 'Exclude from the counter when the reverse lookup (IPs to remote hosts) failed (IPs of robots tend to reject the reverse lookup)';
+$lang['reverseLookupException'] = 'IPs which the plugin doesn\'t apply to the option "reverseLookupFailed"<br>Enter one IP per line.<br>Wildcards available:<br>? = one character<br>* = one or more characters<br><br>e.g.: "123.456.???.123" -> 123.456.789.123, etc. (123.456.78.123 won\'t be excluded)<br>e.g.: "123.*.789.123" -> 123.456.789.123, 123.9.789.123, etc.';
+$lang['reverseLookupCntrException'] = 'Countries which the plugin doesn\'t apply to the option "reverseLookupFailed"<br>The plugin gets country codes by a DNS service of "cc.wariate.jp" (<a href="http://cc.wariate.jp/" target="_blank">Details in Japanese</a>).<br>Enter two-character country codes(ISO 3166-1 alpha-2) separated by comma.';
+$lang['usrExclusion'] = 'Users or user groups that will be excluded<br>The plugin don\'t count these users and users in these groups.<br>Enter users and user groups separated by comma.';
+$lang['cntrExclusion'] = 'Countries that will be exluded<br>The plugin don\'t count users from these countries.  This list will be useful if your website has many accesses by robot(s) from specified country(ies).<br>The plugin gets country codes by a DNS service of "cc.wariate.jp" (<a href="http://cc.wariate.jp/" target="_blank">Details in Japanese</a>).<br> Enter two-character country codes(ISO 3166-1 alpha-2) separated by comma.';
+$lang['saveLog'] = 'Save the log of IPs, the date and the time when visitors access this wiki?<br>The log will be recorded for every page.  This option will be useful when you decide which IPs, remote hosts, and countries to exclude from the counter.<br>The log files will be saved in <code>/(path of your DokuWiki)/lib/plugins/accscounter/log/iplogs/</code>.  Pick up and delete the log files if necessary.';
+$lang['excludeMgAndSp_o_0']  ='Count both';
+$lang['excludeMgAndSp_o_sp']  ='Don\'t count superusers';
+$lang['excludeMgAndSp_o_mg']    ='Don\'t count managers (including superusers)';
+$lang['saveLog_o_0'] = 'Don\'t save';
+$lang['saveLog_o_ppage'] = 'Save (Don\'t make files for every date)';
+$lang['saveLog_o_pdate'] = 'Save (Make files for every date)';

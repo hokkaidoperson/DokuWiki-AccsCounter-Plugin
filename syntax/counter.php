@@ -1,11 +1,13 @@
 <?php
-//
-// Access Counter and Popularity Plugin -- Access Counter
-//
-// Original source of this plugin is PukiWiki.
-// Ported by HokkaidoPerson <dosankomali@yahoo.co.jp>
-//
-//
+/**
+ * Access Counter and Popularity Plugin -- Access Counter
+ *
+ * Original source of this plugin is PukiWiki.
+ *
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author  HokkaidoPerson <dosankomali@yahoo.co.jp>
+ */
+
 // Original Licenses of this plugin:
 //
 // PukiWiki - Yet another WikiWikiWeb clone
@@ -36,6 +38,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         function plugin_counter_get_count($page)
         {
             global $ACT;
+            global $USERINFO;
             static $counters = array();
             static $default;
 
@@ -53,6 +56,85 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             // Set default
             $counters[$page] = $default;
             $modify = FALSE;
+
+            // Load and handle the exclusion list (IPs and remote hosts)
+            $exlist = str_replace(array("\r\n", "\r", "\n"), "\n", $this->getConf('exclusionList'));
+            $exlist = preg_quote($exlist, '/');
+            $exlist = str_replace('\*', '[0-9A-Za-z.-]+', $exlist);
+            $exlist = str_replace('\?', '[0-9A-Za-z.-]', $exlist);
+            $exlist = str_replace('~', '[0-9]+', $exlist);
+            $exlist = str_replace('\!', '[0-9]', $exlist);
+            $exlist = explode("\n", $exlist);
+
+            $remotehost = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+            $excluded = FALSE;
+            foreach ($exlist as $checking) {
+                $prefix = '/^' . $checking . '$/';
+                if (preg_match($prefix, $_SERVER['REMOTE_ADDR'])) $excluded = TRUE;
+                if (preg_match($prefix, $remotehost)) $excluded = TRUE;
+            }
+
+            // Check about the country
+            $countries = explode(',', $this->getConf('cntrExclusion'));
+            $countries = array_map('trim', $countries);
+            $countries = array_unique($countries);
+            $countries = array_filter($countries);
+
+            // Get a country code related to the user
+            // Ingredients to generate a DNS address
+            $ingr = explode(".", $_SERVER['REMOTE_ADDR']);
+            // Compose a "cc.wariate.jp" DNS address
+            $dnsaddr = $ingr[3] . "." . $ingr[2] . "." . $ingr[1] . "." . $ingr[0] . ".cc.wariate.jp";
+
+            // Investigate now
+            $dnsdatas = dns_get_record($dnsaddr, DNS_TXT);
+            if ($dnsdatas !== FALSE) $hiscountry = $dnsdatas[0]["txt"]; else $hiscountry = FALSE;
+
+            // Check now
+            if ($hiscountry !== FALSE) {
+                $hiscountry = utf8_strtolower($hiscountry);
+                foreach ($countries as $checking) {
+                    $checkinglower = utf8_strtolower($checking);
+                    if ($checkinglower == $hiscountry) $excluded = TRUE;
+                }
+            }
+
+            // Check about IPs reverse lookup
+            if ($this->getConf('reverseLookupFailed') == '1' && $remotehost == $_SERVER['REMOTE_ADDR']) {
+                $rexlist = str_replace(array("\r\n", "\r", "\n"), "\n", $this->getConf('reverseLookupException'));
+                $rexlist = preg_quote($rexlist, '/');
+                $rexlist = str_replace('\*', '[0-9]+', $rexlist);
+                $rexlist = str_replace('\?', '[0-9]', $rexlist);
+                $rexlist = explode("\n", $rexlist);
+
+                $cntrexlist = explode(',', $this->getConf('reverseLookupCntrException'));
+                $cntrexlist = array_map('trim', $cntrexlist);
+                $cntrexlist = array_unique($cntrexlist);
+                $cntrexlist = array_filter($cntrexlist);
+
+
+                $excluded = TRUE;
+                foreach ($rexlist as $checking) {
+                    $prefix = '/^' . $checking . '$/';
+                    if (preg_match($prefix, $_SERVER['REMOTE_ADDR'])) $excluded = FALSE;
+                }
+
+                if ($hiscountry !== FALSE) {
+                    foreach ($cntrexlist as $checking) {
+                        $checkinglower = utf8_strtolower($checking);
+                        if ($checkinglower == $hiscountry) $excluded = FALSE;
+                    }
+                }
+
+            }
+
+            // Exclude managers and superusers?
+            if ($this->getConf('excludeMgAndSp') == 'mg' && auth_ismanager()) $excluded = TRUE;
+            if ($this->getConf('excludeMgAndSp') == 'sp' && auth_isadmin()) $excluded = TRUE;
+
+            // Check about a list of users and user groups
+            if(auth_isMember($this->getConf('usrExclusion'), $_SERVER['REMOTE_USER'], (array) $USERINFO['grps'])) $excluded = TRUE;
+
 
             // Open
             if (!file_exists(COUNTER_DIR)) mkdir(COUNTER_DIR);
@@ -78,19 +160,80 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                 $counters[$page]['ip']        = $_SERVER['REMOTE_ADDR'];
                 $counters[$page]['date']      = $default['date'];
                 $counters[$page]['yesterday'] = $is_yesterday ? $counters[$page]['today'] : 0;
-                $counters[$page]['today']     = 1;
-                $counters[$page]['total']++;
+                // Excluded?
+                if ($excluded == FALSE) {
+                    $counters[$page]['today']     = 1;
+                    $counters[$page]['total']++;
+
+                    // Save the log?
+                    switch ($this->getConf('saveLog')) {
+                    case 'pdate' :
+                        $filepageid = str_replace(':','/',$page);
+                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
+                        $logfilename = $logfiledir . utf8_strtolower(date('M-d-Y')) . '.txt';
+                        if ($loghandle = fopen($logfilename, 'a')) {
+                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            fwrite($loghandle, $logcontent);
+                            fclose($loghandle);
+                        }
+                        break;
+
+                    case 'ppage' :
+                        $filepageid = str_replace(':','/',$page);
+                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
+                        $logfilename = $logfiledir . 'wholeperiod.txt';
+                        if ($loghandle = fopen($logfilename, 'a')) {
+                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            fwrite($loghandle, $logcontent);
+                            fclose($loghandle);
+                        }
+                        break;
+                    }
+                } else {
+                    $counters[$page]['today']     = 0;
+                }
             } else if ($counters[$page]['ip'] != $_SERVER['REMOTE_ADDR']) {
                 // Not the same host
-                $modify = TRUE;
-                $counters[$page]['ip']        = $_SERVER['REMOTE_ADDR'];
-                $counters[$page]['today']++;
-                $counters[$page]['total']++;
+                if ($excluded == FALSE) {
+                    $modify = TRUE;
+                    $counters[$page]['ip']        = $_SERVER['REMOTE_ADDR'];
+                    $counters[$page]['today']++;
+                    $counters[$page]['total']++;
+
+                    // Save the log?
+                    switch ($this->getConf('saveLog')) {
+                    case 'pdate' :
+                        $filepageid = str_replace(':','/',$page);
+                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
+                        $logfilename = $logfiledir . utf8_strtolower(date('M-d-Y')) . '.txt';
+                        if ($loghandle = fopen($logfilename, 'a')) {
+                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            fwrite($loghandle, $logcontent);
+                            fclose($loghandle);
+                        }
+                        break;
+
+                    case 'ppage' :
+                        $filepageid = str_replace(':','/',$page);
+                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
+                        $logfilename = $logfiledir . 'wholeperiod.txt';
+                        if ($loghandle = fopen($logfilename, 'a')) {
+                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            fwrite($loghandle, $logcontent);
+                            fclose($loghandle);
+                        }
+                        break;
+                    }
+                }
             }
 
             // Modify
             if ($ACT == '' or $ACT == 'show') $showing = TRUE;
-            
+
             if ($modify && $showing == TRUE) {
                 rewind($fp);
                 ftruncate($fp, 0);
@@ -138,7 +281,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         global $INFO;
 
         switch ($data[0]) {
-        case ''     : 
+        case ''     :
         case 'total': $arg = 'total';
             break;
         case 'today': $arg = 'today';

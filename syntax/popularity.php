@@ -1,11 +1,13 @@
 <?php
-//
-// Access Counter and Popularity Plugin -- Popularity Lists
-//
-// Original source of this plugin is PukiWiki.
-// Ported by Hokkaidoperson <dosankomali@yahoo.co.jp>
-//
-//
+/**
+ * Access Counter and Popularity Plugin -- Popularity Lists
+ *
+ * Original source of this plugin is PukiWiki.
+ *
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ * @author  HokkaidoPerson <dosankomali@yahoo.co.jp>
+ */
+
 // Original Licenses of this plugin:
 //
 // PukiWiki - Yet another WikiWikiWeb clone
@@ -105,14 +107,14 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
         $except = '|' . $data[2] . '|';
 
         $counters = array();
-        
+
         $pagedatas = $this->get_existpages(COUNTER_DIR, '.count');
-        
+
         if ($pagedatas == COUNTER_DIR) {
             $renderer->doc .= htmlspecialchars($this->getLang('err4') . COUNTER_DIR);
             return;
         }
-        
+
         foreach ($pagedatas as $file=>$page) {
             if ((strpos($except, '|' . $page . '|') !== FALSE) ||
                 ! file_exists(wikiFN($page)))
@@ -125,9 +127,9 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
             $yesterday_count = rtrim($array[3]);
 
             if ($today) {
-                if ($today == $date) $counters[$page] = $today_count;
+                if (($today == $date) and ($today_count != 0)) $counters[$page] = $today_count;
             } else if ($yesterday) {
-                if ($yesterday == $date) $counters[$page] = $today_count;
+                if (($yesterday == $date) and ($today_count != 0)) $counters[$page] = $today_count;
                 if (($thisday == $date) and ($yesterday_count != 0)) $counters[$page] = $yesterday_count;
             } else {
                 $counters[$page] = $count;
