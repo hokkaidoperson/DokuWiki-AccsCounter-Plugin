@@ -257,13 +257,13 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
     }
 
 
-    function handle($match, $state, $pos, &$handler){
+    function handle($match, $state, $pos, Doku_Handler $handler){
 
         return explode('|', substr($match, strlen('{{counter|'), -2));
 
     }
 
-    function render($mode, &$renderer, $data) {
+    function render($mode, Doku_Renderer $renderer, $data) {
         // Counter file's suffix
         define('PLUGIN_COUNTER_SUFFIX', '.count');
 
