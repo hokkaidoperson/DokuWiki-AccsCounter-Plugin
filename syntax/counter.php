@@ -39,6 +39,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         {
             global $ACT;
             global $USERINFO;
+            global $conf;
             static $counters = array();
             static $default;
 
@@ -50,7 +51,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                     'yesterday' => 0,
                     'ip'        => '');
 
-            if (! file_exists(wikiFN($page))) return $default;
+            if (page_exists($page) == FALSE) return $default;
             if (isset($counters[$page])) return $counters[$page];
 
             // Set default
@@ -135,29 +136,53 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             // Check about a list of users and user groups
             if(auth_isMember($this->getConf('usrExclusion'), $_SERVER['REMOTE_USER'], (array) $USERINFO['grps'])) $excluded = TRUE;
 
+            // Check if the user is a spammer
+            $ishespam = FALSE;
+            $sfspluginok = FALSE;
+            if (! plugin_isdisabled('stopforumspam2')) {
+                if ($helper = plugin_load('helper','stopforumspam2')) {
+                    $sfspluginok = TRUE;
+                    if ($helper->quickipcheck(null, $this->getConf('sfsExFreq'), $this->getConf('sfsExConf'))) {
+                        $ishespam = TRUE;
+                        $excluded = TRUE;
+                    }
+                }
+            }
+
 
             // Open
-            if (!file_exists(COUNTER_DIR)) mkdir(COUNTER_DIR);
-            $file = COUNTER_DIR . urlencode($page) . PLUGIN_COUNTER_SUFFIX;
-            touch($file);
-            $fp = @fopen($file, 'r+');
-            if ($fp == FALSE) return $this->getLang('err1') . basename($file);
-            set_file_buffer($fp, 0);
-            flock($fp, LOCK_EX);
-            rewind($fp);
+            $file = metaFN($page, '.accscounternm');
+            if (file_exists($file)) {
+                $fp = io_readFile($file);
+                if ($fp === FALSE) return $this->getLang('err1') . basename($file);
+                $fp = explode("\n", $fp);
+            } else $fp = array();
 
             // Read
-            foreach (array_keys($default) as $key) {
-                // Update
-                $counters[$page][$key] = rtrim(fgets($fp, 256));
-                if (feof($fp)) break;
+            if ($fp[0]) $counters[$page]['total'] = $fp[0];
+            if ($fp[1]) $counters[$page]['date'] = $fp[1];
+            if ($fp[2]) $counters[$page]['today'] = $fp[2];
+            if ($fp[3]) $counters[$page]['yesterday'] = $fp[3];
+            if ($fp[4]) $counters[$page]['ip'] = $fp[4];
+
+            // Is the previous visitor a spammer?
+            if ($sfspluginok) {
+                if ($helper->quickipcheck($counters[$page]['ip'], $this->getConf('sfsExFreq'), $this->getConf('sfsExConf'))) {
+                    // Then remove him from the counter
+                    $modify = TRUE;
+                    $counters[$page]['today']--;
+                    $counters[$page]['total']--;
+                    if ($counters[$page]['today'] < 0) $counters[$page]['today'] = 0;
+                    if ($counters[$page]['total'] < 0) $counters[$page]['total'] = 0;
+                    $counters[$page]['ip'] = '0.0.0.0';
+                }
             }
 
             // Anothoer day?
             if ($counters[$page]['date'] != $default['date']) {
                 $modify = TRUE;
                 $is_yesterday = ($counters[$page]['date'] == date('Y/m/d', CURRENT - 24 * 60 * 60));
-                $counters[$page]['ip']        = $_SERVER['REMOTE_ADDR'];
+                if (!$ishespam) $counters[$page]['ip'] = $_SERVER['REMOTE_ADDR']; else $counters[$page]['ip'] = '0.0.0.0';
                 $counters[$page]['date']      = $default['date'];
                 $counters[$page]['yesterday'] = $is_yesterday ? $counters[$page]['today'] : 0;
                 // Excluded?
@@ -169,7 +194,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                     switch ($this->getConf('saveLog')) {
                     case 'pdate' :
                         $filepageid = str_replace(':','/',$page);
-                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        $logfiledir = $conf['cachedir'] . '/accscounterlog/' . utf8_encodeFN($filepageid) . '/';
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . utf8_strtolower(date('M-d-Y')) . '.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
@@ -181,7 +206,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
                     case 'ppage' :
                         $filepageid = str_replace(':','/',$page);
-                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        $logfiledir = $conf['cachedir'] . '/accscounterlog/' . utf8_encodeFN($filepageid) . '/';
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . 'wholeperiod.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
@@ -206,7 +231,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                     switch ($this->getConf('saveLog')) {
                     case 'pdate' :
                         $filepageid = str_replace(':','/',$page);
-                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        $logfiledir = $conf['cachedir'] . '/accscounterlog/' . utf8_encodeFN($filepageid) . '/';
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . utf8_strtolower(date('M-d-Y')) . '.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
@@ -218,7 +243,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
                     case 'ppage' :
                         $filepageid = str_replace(':','/',$page);
-                        $logfiledir = DOKU_PLUGIN . 'accscounter/log/iplogs/' . utf8_encodeFN($filepageid) . '/';
+                        $logfiledir = $conf['cachedir'] . '/accscounterlog/' . utf8_encodeFN($filepageid) . '/';
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . 'wholeperiod.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
@@ -235,15 +260,11 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             if ($ACT == '' or $ACT == 'show') $showing = TRUE;
 
             if ($modify && $showing == TRUE) {
-                rewind($fp);
-                ftruncate($fp, 0);
+                $savedata = '';
                 foreach (array_keys($default) as $key)
-                    fputs($fp, $counters[$page][$key] . "\n");
+                    $savedata .= $counters[$page][$key] . "\n";
+                io_saveFile($file, $savedata);
             }
-
-            // Close
-            flock($fp, LOCK_UN);
-            fclose($fp);
 
             return $counters[$page];
         }
@@ -264,11 +285,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
     }
 
     function render($mode, Doku_Renderer $renderer, $data) {
-        // Counter file's suffix
-        define('PLUGIN_COUNTER_SUFFIX', '.count');
-
-        // Where the directory for counter files is?
-        define('COUNTER_DIR', DOKU_PLUGIN . 'accscounter/log/');
+        global $INFO;
 
         // Get the time zone from conf (if null, it will use the default setting on your server)
         if ($this->getConf('timezone') != '')  date_default_timezone_set($this->getConf('timezone'));
@@ -278,7 +295,6 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
 
         // Main process
-        global $INFO;
 
         switch ($data[0]) {
         case ''     :

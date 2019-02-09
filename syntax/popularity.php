@@ -33,27 +33,6 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
         return 300; // after accscounter_counter
     }
 
-        // Internal function
-        // Get a page list of this wiki
-        function get_existpages($dir = DATA_DIR, $ext = '.txt')
-        {
-            $aryret = array();
-            $pattern = '/^([-_.a-zA-Z0-9%]+)' . preg_quote($ext, '/') . '$/';
-
-            $dp = @opendir($dir);
-            if (! $dp) return $dir;
-            $matches = array();
-            while (($file = readdir($dp)) !== FALSE) {
-                if (preg_match($pattern, $file, $matches)) {
-                    $aryret[$file] = urldecode($matches[1]);
-                }
-            }
-            closedir($dp);
-
-            return $aryret;
-        }
-
-
     //Syntax: {{POPULAR (divide by a space) the number of items (10 in default) (divide by a space) allperiod(default), today, or yesterday (divide by a space) blacklist 1|blacklist 2|(divide by "|")...}}
     //If entered just {{POPULAR}} , this will return the list with 10 items, considering whole period, without any blacklists.
 
@@ -71,9 +50,6 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
     function render($mode, Doku_Renderer $renderer, $data) {
         define('PLUGIN_POPULAR_DEFAULT', 10);
 
-        // Where the directory for counter files is?
-        define('COUNTER_DIR', DOKU_PLUGIN . 'accscounter/log/');
-
         // Get the time zone from conf (if null, it will use the default setting on your server)
         if ($this->getConf('timezone') != '') date_default_timezone_set($this->getConf('timezone'));
 
@@ -82,6 +58,7 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
 
 
         global $INFO;
+        global $conf;
 
         $max    = PLUGIN_POPULAR_DEFAULT;
         $except = '';
@@ -108,19 +85,20 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
 
         $counters = array();
 
-        $pagedatas = $this->get_existpages(COUNTER_DIR, '.count');
+        // Get the list of all pages
+        require_once(DOKU_INC.'inc/search.php');
+        $dir = $conf['datadir'];
+        $items = array();
+        search($items, $dir, 'search_allpages', array());
 
-        if ($pagedatas == COUNTER_DIR) {
-            $renderer->doc .= htmlspecialchars($this->getLang('err4') . COUNTER_DIR);
-            return;
-        }
-
-        foreach ($pagedatas as $file=>$page) {
+        foreach ($items as $item) {
+            $page = $item['id'];
             if ((strpos($except, '|' . $page . '|') !== FALSE) ||
-                ! file_exists(wikiFN($page)))
+                ! page_exists($page) || ! auth_quickaclcheck($page))
                 continue;
 
-            $array = file(COUNTER_DIR . $file);
+            $array = @file(metaFN($page, '.accscounternm'));
+            if ($array === FALSE) continue;
             $count = rtrim($array[0]);
             $date  = rtrim($array[1]);
             $today_count = rtrim($array[2]);
