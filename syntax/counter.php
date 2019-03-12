@@ -43,6 +43,8 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             static $counters = array();
             static $default;
 
+            $achelper = plugin_load('helper','accscounter');
+
             if (! isset($default))
                 $default = array(
                     'total'     => 0,
@@ -151,7 +153,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
 
             // Open
-            $file = metaFN($page, '.accscounternm');
+            $file = $achelper->counterFN($page, '.number');
             if (file_exists($file)) {
                 $fp = io_readFile($file);
                 if ($fp === FALSE) return $this->getLang('err1') . basename($file);
@@ -165,24 +167,11 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             if ($fp[3]) $counters[$page]['yesterday'] = $fp[3];
             if ($fp[4]) $counters[$page]['ip'] = $fp[4];
 
-            // Is the previous visitor a spammer?
-            if ($sfspluginok) {
-                if ($helper->quickipcheck($counters[$page]['ip'], $this->getConf('sfsExFreq'), $this->getConf('sfsExConf'))) {
-                    // Then remove him from the counter
-                    $modify = TRUE;
-                    $counters[$page]['today']--;
-                    $counters[$page]['total']--;
-                    if ($counters[$page]['today'] < 0) $counters[$page]['today'] = 0;
-                    if ($counters[$page]['total'] < 0) $counters[$page]['total'] = 0;
-                    $counters[$page]['ip'] = '0.0.0.0';
-                }
-            }
-
             // Anothoer day?
             if ($counters[$page]['date'] != $default['date']) {
                 $modify = TRUE;
                 $is_yesterday = ($counters[$page]['date'] == date('Y/m/d', CURRENT - 24 * 60 * 60));
-                if (!$ishespam) $counters[$page]['ip'] = $_SERVER['REMOTE_ADDR']; else $counters[$page]['ip'] = '0.0.0.0';
+                $counters[$page]['ip'] = $_SERVER['REMOTE_ADDR'];
                 $counters[$page]['date']      = $default['date'];
                 $counters[$page]['yesterday'] = $is_yesterday ? $counters[$page]['today'] : 0;
                 // Excluded?
@@ -216,6 +205,29 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                         }
                         break;
                     }
+                    if (file_exists($achelper->counterFN($page, '.ip'))) {
+                        $ipdata = @file($achelper->counterFN($page, '.ip'));
+                        if ($ipdata != FALSE) {
+                            $inthelog = FALSE;
+                            $newcontents = array();
+                            foreach ($ipdata as $dataline) {
+                                $element = explode('|', $dataline);
+                                $element[0] = trim($element[0]);
+                                $element[1] = trim($element[1]);
+                                if ($_SERVER["REMOTE_ADDR"] == $element[0]) {
+                                    $inthelog = TRUE;
+                                    $element[1]++;
+                                }
+                                $newcontents[] = $element[0] . '|' . $element[1];
+                            }
+                            if (!$inthelog) $newcontents[] = $_SERVER["REMOTE_ADDR"] . '|1';
+                            $writing = '';
+                            foreach ($newcontents as $part) {
+                                $writing .= $part . "\n";
+                            }
+                            io_saveFile($achelper->counterFN($page, '.ip'), $writing);
+                        }
+                    } else io_saveFile($achelper->counterFN($page, '.ip'), $_SERVER["REMOTE_ADDR"] . "|1\n");
                 } else {
                     $counters[$page]['today']     = 0;
                 }
@@ -253,6 +265,29 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                         }
                         break;
                     }
+                    if (file_exists($achelper->counterFN($page, '.ip'))) {
+                        $ipdata = @file($achelper->counterFN($page, '.ip'));
+                        if ($ipdata != FALSE) {
+                            $inthelog = FALSE;
+                            $newcontents = array();
+                            foreach ($ipdata as $dataline) {
+                                $element = explode('|', $dataline);
+                                $element[0] = trim($element[0]);
+                                $element[1] = trim($element[1]);
+                                if ($_SERVER["REMOTE_ADDR"] == $element[0]) {
+                                    $inthelog = TRUE;
+                                    $element[1]++;
+                                }
+                                $newcontents[] = $element[0] . '|' . $element[1];
+                            }
+                            if (!$inthelog) $newcontents[] = $_SERVER["REMOTE_ADDR"] . '|1';
+                            $writing = '';
+                            foreach ($newcontents as $part) {
+                                $writing .= $part . "\n";
+                            }
+                            io_saveFile($achelper->counterFN($page, '.ip'), $writing);
+                        }
+                    } else io_saveFile($achelper->counterFN($page, '.ip'), $_SERVER["REMOTE_ADDR"] . "|1\n");
                 }
             }
 

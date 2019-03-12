@@ -1,0 +1,11 @@
+Page(s) you specified are shown below.
+
+You can exclude spammers from the counter (StopForumSpam2 Plugin required), or delete the log data.
+
+Tick checkbox(es) that correspond to the log you want to handle, choose "Spammer Check" or "Delete the Log" from the pull down, then click "Run" button.  If you do nothing, you may close this page now.
+
+[NOTE] If you click the "Run" button, the system will start checking or deleting **without notice**.
+
+[NOTE] If you use the Spammer Check function, set values of "sfsExFreq" and "sfsExConf" from Configuration Manager in advance.
+
+[NOTE] The Spammer Check function needs connection to api.stopforumspam.org.  If you specify many pages for the spammer check at a time, the system may take a while to complete the function.

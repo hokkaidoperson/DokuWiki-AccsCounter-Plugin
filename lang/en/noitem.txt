@@ -1,0 +1,8 @@
+No log data found.
+
+  * The access counter may not be put.  If you want to put counters for all pages quickly, put a counter in the sidebar.
+    * Don't forget to write ''%%~~NOCACHE~~%%'' in the page you'll put the counter.
+  * Even if the counter(s) are properly put, the log file won't be made in some usage situations.
+  * If you're searching the log file with the keyword, change the search query.
+
+----

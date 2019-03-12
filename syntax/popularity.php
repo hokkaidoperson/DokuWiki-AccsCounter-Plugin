@@ -56,6 +56,7 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
         // Get current time (local)
         define('CURRENT', time());
 
+        $achelper = plugin_load('helper','accscounter');
 
         global $INFO;
         global $conf;
@@ -97,7 +98,7 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
                 ! page_exists($page) || ! auth_quickaclcheck($page))
                 continue;
 
-            $array = @file(metaFN($page, '.accscounternm'));
+            $array = @file($achelper->counterFN($page, '.number'));
             if ($array === FALSE) continue;
             $count = rtrim($array[0]);
             $date  = rtrim($array[1]);

@@ -1,10 +1,10 @@
 ====== Access Counter - Data Transferer ======
-The saving destination of this plugin's log files has been changed, to be compatible with some plugins such as Farmer plugin.
+The saving destination of this plugin's log files has been changed, to be compatible with some plugins such as Farmer plugin, and to make it easy to uninstall this plugin.
 
 Old log files are still being stored in the old destination.  Please decide how to handle these files.
 
 ===== WARNING =====
-**Be careful, once you click one of following links, the system will __start to move or delete the files without notice__.\\ All files on the new destination will be __all overwritten__.\\ Also, I recommend you to backup the files in advance.**
+**Be careful, once you click one of following links, the system will __start to move or delete the files without notice__.\\ Files on the new destination will be __all overwritten__.\\ Also, I recommend you to backup the files in advance.**
 
 ===== Function Menu =====
   * [[?do=accscounter_datatransfer&mode=move|Move the files to the new destination]]
