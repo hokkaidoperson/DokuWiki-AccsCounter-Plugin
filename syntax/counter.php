@@ -83,6 +83,11 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             $countries = array_unique($countries);
             $countries = array_filter($countries);
 
+            $countriesin = explode(',', $this->getConf('cntrInclusion'));
+            $countriesin = array_map('trim', $countries);
+            $countriesin = array_unique($countries);
+            $countriesin = array_filter($countries);
+
             // Get a country code related to the user
             // Ingredients to generate a DNS address
             $ingr = explode(".", $_SERVER['REMOTE_ADDR']);
@@ -99,6 +104,13 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                 foreach ($countries as $checking) {
                     $checkinglower = utf8_strtolower($checking);
                     if ($checkinglower == $hiscountry) $excluded = TRUE;
+                }
+                if ($this->getConf('cntrInclusion') != '') {
+                    foreach ($countriesin as $checking) {
+                        $checkinglower = utf8_strtolower($checking);
+                        if ($checkinglower == $hiscountry) $included = TRUE;
+                    }
+                    if ($included != TRUE) $excluded = TRUE;
                 }
             }
 

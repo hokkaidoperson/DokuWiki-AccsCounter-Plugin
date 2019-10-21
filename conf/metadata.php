@@ -5,6 +5,7 @@ $meta['excludeMgAndSp'] = array('multichoice','_choices' => array('0','sp','mg')
 $meta['exclusionList'] = array('');
 $meta['usrExclusion'] = array('string');
 $meta['cntrExclusion'] = array('string');
+$meta['cntrInclusion'] = array('string');
 $meta['reverseLookupFailed'] = array('onoff');
 $meta['reverseLookupException'] = array('');
 $meta['reverseLookupCntrException'] = array('string');

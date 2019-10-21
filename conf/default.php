@@ -5,6 +5,7 @@ $conf['excludeMgAndSp'] = '0';
 $conf['exclusionList'] = '';
 $conf['usrExclusion'] = '';
 $conf['cntrExclusion'] = '';
+$conf['cntrInclusion'] = '';
 $conf['reverseLookupFailed'] = '0';
 $conf['reverseLookupException'] = '';
 $conf['reverseLookupCntrException'] = '';
