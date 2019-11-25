@@ -1,0 +1,8 @@
+Nenhum dado de log encontrado.
+
+   * O contador de acesso não precisa ser instalado. Se você deseja colocar contadores para todas as páginas rapidamente, coloque um contador na barra lateral.
+     * Não se esqueça de escrever '%%~~NOCACHE~~%%'' na página em que você colocará o contador.
+   * Mesmo que os contadores sejam colocados corretamente, o arquivo de log não será criado em algumas situações de uso.
+   * Se você estiver pesquisando o arquivo de log com a palavra-chave, altere a consulta de pesquisa.
+
+----

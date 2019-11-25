@@ -1,0 +1,12 @@
+====== Contador de acesso - Transferidor de dados ======
+O destino de salvamento dos arquivos de log deste plugin foi alterado, para ser compatível com alguns plugins como o Farmer e facilitar a desinstalação dele.
+
+Arquivos de log antigos ainda estão sendo armazenados no destino antigo. Por favor, decida como lidar com esses arquivos.
+
+===== ATENÇÃO =====
+**Cuidado, depois de clicar em um dos links a seguir, o sistema __ começará a mover ou excluir os arquivos sem aviso prévio__. \\ Os arquivos no novo destino serão __todos substituídos__. \\Além disso, recomendo que você faça backup dos arquivos antes.**
+
+===== Menu de Função =====
+   * [[?do=accscounter_datatransfer&mode=move|Mova os arquivos para o novo destino]]
+
+   * [[?do=accscounter_datatransfer&mode=delete|Não mova os arquivos, apenas exclua-os]]
