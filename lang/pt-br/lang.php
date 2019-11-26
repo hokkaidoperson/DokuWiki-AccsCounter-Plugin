@@ -45,3 +45,7 @@ $lang['pleasechoose']          = '**ESCOLHA**';
 $lang['sfscheck']              = 'Verificar Spammer';
 $lang['delete']                = 'Excluir o Log';
 $lang['run']                   = 'Executar';
+$lang['sfstried']              = 'A página %s foi acessada por um spammer (endereço IP: %s) por %d vezes; portanto, o sistema deduziu o número de acessos do remetente de spam dos PVs até agora e dos de hoje. Por favor, confirme.';
+$lang['sfsfinish']             = 'Terminou a verificação de spammer.';
+$lang['mngfaileddel']          = 'Erro ao excluir o arquivo de log da página %s. Confirme a permissão para acessar arquivos dentro do diretório em que o sistema salva os metarquivos. Se você não entender isso, exclua os arquivos com ferramentas como uma ferramenta de FTP.';
+$lang['mngdelfinish']          = 'Concluído a exclusão do log.';
