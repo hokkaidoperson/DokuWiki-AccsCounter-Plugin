@@ -15,6 +15,6 @@ Depois de selecionar a ação no menu a seguir, para cada página, você verá:
 
    * [[?do=admin&page=accscounter&action=mng&mode=deletado|Mostrar o log de páginas inexistentes]]
 
-   * [[?do=admin&page=accscounter&action=mng&mode=all|Mostra o log de todas as páginas (incluindo páginas inexistentes)]]
+   * [[?do=admin&page=accscounter&action=mng&mode=all|Mostrar o log de todas as páginas (incluindo páginas inexistentes)]]
 
 Ou pesquise os nomes das páginas ou espaços de nomes com a caixa de texto abaixo (esta função de pesquisa é muito simples).
