@@ -5,7 +5,7 @@
  *
  * @author Schopf <pschopf@gmail.com>
  */
-$lang['err1']                  = 'Erro no plug-in Accscounter: Não é possível abrir o diretório do log deste arquivo;';
+$lang['err1']                  = 'Erro no plugin Accscounter: Não é possível abrir o diretório do log deste arquivo;';
 $lang['err2']                  = 'Erro no plugin Accscounter: Defina um argumento válido (hoje, ontem ou total).';
 $lang['err3']                  = 'Erro no plugin Accscounter: Defina um argumento válido (hoje, ontem ou período total).';
 $lang['err4']                  = 'Erro no plugin Accscounter: Diretório não encontrado ou não pôde ser lido;';
@@ -48,4 +48,4 @@ $lang['run']                   = 'Executar';
 $lang['sfstried']              = 'A página %s foi acessada por um spammer (endereço IP: %s) por %d vezes; portanto, o sistema deduziu o número de acessos do remetente de spam dos PVs até agora e dos de hoje. Por favor, confirme.';
 $lang['sfsfinish']             = 'Terminou a verificação de spammer.';
 $lang['mngfaileddel']          = 'Erro ao excluir o arquivo de log da página %s. Confirme a permissão para acessar arquivos dentro do diretório em que o sistema salva os metarquivos. Se você não entender isso, exclua os arquivos com ferramentas como uma ferramenta de FTP.';
-$lang['mngdelfinish']          = 'Concluído a exclusão do log.';
+$lang['mngdelfinish']          = 'Exclusão do log concluída.';
