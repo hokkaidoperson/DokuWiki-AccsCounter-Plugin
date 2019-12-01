@@ -8,7 +8,7 @@ Depois de selecionar a ação no menu a seguir, para cada página, você verá:
    * O número do PV de ontem
    * O endereço IP do visitante que acessou a página pela última vez
 
-[OBSERVAÇÃO] Esta ferramenta pode lidar com muitos arquivos de log de cada vez; portanto, pode demorar um pouco para mostrar o resultado.
+[ATENÇÃO] Esta ferramenta pode lidar com muitos arquivos de log de cada vez; portanto, pode demorar um pouco para mostrar o resultado.
 
 ===== Menu de Função =====
    * [[?do=admin&page=accscounter&action=mng&mode=existente|Mostrar o log de páginas existentes]]
