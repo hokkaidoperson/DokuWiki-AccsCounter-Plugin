@@ -12,3 +12,4 @@ $meta['reverseLookupCntrException'] = array('string');
 $meta['sfsExFreq'] = array('numeric', '_min' => -1);
 $meta['sfsExConf'] = array('numeric', '_min' => -1, '_max' => 100);
 $meta['saveLog'] = array('multichoice','_choices' => array('0','ppage','pdate'));
+$meta['ipgdpr'] = array('onoff');

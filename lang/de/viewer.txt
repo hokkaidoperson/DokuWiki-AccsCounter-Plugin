@@ -1,0 +1,11 @@
+Die von Ihnen angegebenen Seiten werden unten angezeigt.
+
+Sie können Spammer vom Zähler ausschließen (StopForumSpam2-Plugin erforderlich) oder die Protokolldaten löschen.
+
+Aktivieren Sie die Kontrollkästchen, die dem zu behandelnden Protokoll entsprechen, wählen Sie im Pulldown-Menü "Spammer-Prüfung" oder "Protokoll löschen" und klicken Sie dann auf "Ausführen". Wenn Sie nichts tun, können Sie diese Seite jetzt schließen.
+
+[HINWEIS] Wenn Sie auf die Schaltfläche "Ausführen" klicken, überprüft oder löscht das System ** ohne vorherige Ankündigung **.
+
+[HINWEIS] Wenn Sie die Spammerprüfungsfunktion verwenden, legen Sie im Voraus die Werte für "sfsExFreq" und "sfsExConf" im Konfigurations Manager fest.
+
+[HINWEIS] Die Spammer Check-Funktion benötigt eine Verbindung zu api.stopforumspam.org. Wenn Sie mehrere Seiten gleichzeitig für die Spammerprüfung angeben, kann es eine Weile dauern, bis das System die Funktion abgeschlossen hat.

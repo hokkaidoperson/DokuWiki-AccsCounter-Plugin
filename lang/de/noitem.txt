@@ -1,0 +1,8 @@
+Keine Protokolldaten gefunden.
+
+   * Der Zugriffszähler wurde noch nicht gesetzt. Wenn Sie den Zähler schnell für alle Seiten setzen möchten, setzen Sie einen Zähler in die Seitenleiste.
+     * Vergessen Sie nicht, '' %% ~~ NOCACHE ~~ %% '' auf die Seite zu schreiben, auf der Sie den Zähler setzen.
+   * Selbst wenn die Zähler richtig platziert sind, wird die Protokolldatei in einigen Verwendungssituationen nicht erstellt.
+   * Wenn Sie die Protokolldatei mit dem Schlüsselwort durchsuchen, ändern Sie die Suchabfrage.
+
+------
