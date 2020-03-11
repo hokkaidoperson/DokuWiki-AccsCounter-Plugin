@@ -1,0 +1,20 @@
+Hier können Sie die von diesem Plugin gespeicherten Protokolldaten anzeigen und verwalten.
+
+Nachdem Sie die Aktion aus dem folgenden Menü ausgewählt haben, wird für jede Seite folgendes angezeigt:
+
+   * Die Anzahl der Seitenaufrufe (SA) seit der Erstellung der Seite bis jetzt
+   * Das Datum, an dem die Seite zuletzt aufgerufen wurde
+   * Die Anzahl der heutigen SA
+   * Die Anzahl der gestrigen SA
+   * Die IP-Adresse des Besuchers, der zuletzt auf die Seite zugegriffen hat
+
+[HINWEIS] Dieses Tool verarbeitet möglicherweise viele Protokolldateien gleichzeitig. Daher kann es eine Weile dauern, bis das ein Ergebnis angezeigt wird.
+
+===== Funktionsmenü =====
+  * [[?do=admin&page=accscounter&action=mng&mode=existent | Protokoll der vorhandenen Seiten anzeigen]]
+
+  * [[?do=admin&page=accscounter&action=mng&mode=deleted | Protokoll nicht vorhandener Seiten anzeigen]]
+
+  * [[?do=admin&page=accscounter&action=mng&mode=all | Zeigt das Protokoll aller Seiten (einschließlich nicht vorhandener Seiten) an]]
+
+Oder suchen Sie die Seitennamen oder Namespaces mit dem folgenden Textfeld (diese Suchfunktion ist sehr einfach).

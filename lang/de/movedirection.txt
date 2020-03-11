@@ -1,0 +1,12 @@
+====== Zugriffszähler - Datentransfer ======
+Das Speicherziel der Protokolldateien dieses Plugins wurde geändert, um mit einigen Plugins wie dem Farmer-Plugin kompatibel zu sein und die Deinstallation dieses Plugins zu vereinfachen.
+
+Alte Protokolldateien werden weiterhin im alten Ziel gespeichert. Bitte entscheiden Sie, wie mit diesen Dateien umgegangen werden soll.
+
+===== WARNUNG =====
+** Seien Sie vorsichtig, sobald Sie auf einen der folgenden Links klicken, __beginnt das System, ohne vorherige Ankündigung die Dateien zu verschieben oder zu löschen__. \\ Alle vorhanden Dateien am neuen Ziel werden ohne Rückfragen überschrieben. \\ Bitte erstellen Sie daher vor dem ausführen eine Sicherung der Dateien. **
+
+===== Funktionsmenü =====
+  * [[?do=accscounter_datatransfer&mode=move|Verschiebe die Dateien an das neue Ziel]]
+
+  * [[?do=accscounter_datatransfer&mode=delete|Verschiebe die Dateien nicht, lösche sie einfach]]
