@@ -44,6 +44,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             static $default;
 
             $achelper = plugin_load('helper','accscounter');
+            $clientIP = clientIP(true);
 
             if (! isset($default))
                 $default = array(
@@ -69,11 +70,11 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             $exlist = str_replace('\!', '[0-9]', $exlist);
             $exlist = explode("\n", $exlist);
 
-            $remotehost = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+            $remotehost = gethostbyaddr($clientIP);
             $excluded = FALSE;
             foreach ($exlist as $checking) {
                 $prefix = '/^' . $checking . '$/';
-                if (preg_match($prefix, $_SERVER['REMOTE_ADDR'])) $excluded = TRUE;
+                if (preg_match($prefix, $clientIP)) $excluded = TRUE;
                 if (preg_match($prefix, $remotehost)) $excluded = TRUE;
             }
 
@@ -90,7 +91,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
             // Get a country code related to the user
             // Ingredients to generate a DNS address
-            $ingr = explode(".", $_SERVER['REMOTE_ADDR']);
+            $ingr = explode(".", $clientIP);
             // Compose a "cc.wariate.jp" DNS address
             $dnsaddr = $ingr[3] . "." . $ingr[2] . "." . $ingr[1] . "." . $ingr[0] . ".cc.wariate.jp";
 
@@ -116,7 +117,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             }
 
             // Check about IPs reverse lookup
-            if ($this->getConf('reverseLookupFailed') == '1' && $remotehost == $_SERVER['REMOTE_ADDR']) {
+            if ($this->getConf('reverseLookupFailed') == '1' && $remotehost == $clientIP) {
                 $rexlist = str_replace(array("\r\n", "\r", "\n"), "\n", $this->getConf('reverseLookupException'));
                 $rexlist = preg_quote($rexlist, '/');
                 $rexlist = str_replace('\*', '[0-9]+', $rexlist);
@@ -132,7 +133,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                 $excluded = TRUE;
                 foreach ($rexlist as $checking) {
                     $prefix = '/^' . $checking . '$/';
-                    if (preg_match($prefix, $_SERVER['REMOTE_ADDR'])) $excluded = FALSE;
+                    if (preg_match($prefix, $clientIP)) $excluded = FALSE;
                 }
 
                 if ($hiscountry !== FALSE) {
@@ -184,7 +185,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
             if ($counters[$page]['date'] != $default['date']) {
                 $modify = TRUE;
                 $is_yesterday = ($counters[$page]['date'] == date('Y/m/d', CURRENT - 24 * 60 * 60));
-                $counters[$page]['ip'] = $_SERVER['REMOTE_ADDR'];
+                $counters[$page]['ip'] = $clientIP;
                 $counters[$page]['date']      = $default['date'];
                 $counters[$page]['yesterday'] = $is_yesterday ? $counters[$page]['today'] : 0;
                 // Excluded?
@@ -200,7 +201,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . utf8_strtolower(date('M-d-Y')) . '.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
-                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            $logcontent = $clientIP ."(" . date('H:i:s M d, Y') . ")\n";
                             fwrite($loghandle, $logcontent);
                             fclose($loghandle);
                         }
@@ -212,7 +213,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . 'wholeperiod.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
-                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            $logcontent = $clientIP ."(" . date('H:i:s M d, Y') . ")\n";
                             fwrite($loghandle, $logcontent);
                             fclose($loghandle);
                         }
@@ -227,28 +228,28 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                                 $element = explode('|', $dataline);
                                 $element[0] = trim($element[0]);
                                 $element[1] = trim($element[1]);
-                                if ($_SERVER["REMOTE_ADDR"] == $element[0]) {
+                                if ($clientIP == $element[0]) {
                                     $inthelog = TRUE;
                                     $element[1]++;
                                 }
                                 $newcontents[] = $element[0] . '|' . $element[1];
                             }
-                            if (!$inthelog) $newcontents[] = $_SERVER["REMOTE_ADDR"] . '|1';
+                            if (!$inthelog) $newcontents[] = $clientIP . '|1';
                             $writing = '';
                             foreach ($newcontents as $part) {
                                 $writing .= $part . "\n";
                             }
                             io_saveFile($achelper->counterFN($page, '.ip'), $writing);
                         }
-                    } else io_saveFile($achelper->counterFN($page, '.ip'), $_SERVER["REMOTE_ADDR"] . "|1\n");
+                    } else io_saveFile($achelper->counterFN($page, '.ip'), $clientIP . "|1\n");
                 } else {
                     $counters[$page]['today']     = 0;
                 }
-            } else if ($counters[$page]['ip'] != $_SERVER['REMOTE_ADDR']) {
+            } else if ($counters[$page]['ip'] != $clientIP) {
                 // Not the same host
                 if ($excluded == FALSE) {
                     $modify = TRUE;
-                    $counters[$page]['ip']        = $_SERVER['REMOTE_ADDR'];
+                    $counters[$page]['ip']        = $clientIP;
                     $counters[$page]['today']++;
                     $counters[$page]['total']++;
 
@@ -260,7 +261,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . utf8_strtolower(date('M-d-Y')) . '.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
-                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            $logcontent = $clientIP ."(" . date('H:i:s M d, Y') . ")\n";
                             fwrite($loghandle, $logcontent);
                             fclose($loghandle);
                         }
@@ -272,7 +273,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                         if (!file_exists($logfiledir)) mkdir($logfiledir, 0777, true);
                         $logfilename = $logfiledir . 'wholeperiod.txt';
                         if ($loghandle = fopen($logfilename, 'a')) {
-                            $logcontent = $_SERVER["REMOTE_ADDR"] ."(" . date('H:i:s M d, Y') . ")\n";
+                            $logcontent = $clientIP ."(" . date('H:i:s M d, Y') . ")\n";
                             fwrite($loghandle, $logcontent);
                             fclose($loghandle);
                         }
@@ -287,20 +288,20 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                                 $element = explode('|', $dataline);
                                 $element[0] = trim($element[0]);
                                 $element[1] = trim($element[1]);
-                                if ($_SERVER["REMOTE_ADDR"] == $element[0]) {
+                                if ($clientIP == $element[0]) {
                                     $inthelog = TRUE;
                                     $element[1]++;
                                 }
                                 $newcontents[] = $element[0] . '|' . $element[1];
                             }
-                            if (!$inthelog) $newcontents[] = $_SERVER["REMOTE_ADDR"] . '|1';
+                            if (!$inthelog) $newcontents[] = $clientIP . '|1';
                             $writing = '';
                             foreach ($newcontents as $part) {
                                 $writing .= $part . "\n";
                             }
                             io_saveFile($achelper->counterFN($page, '.ip'), $writing);
                         }
-                    } else io_saveFile($achelper->counterFN($page, '.ip'), $_SERVER["REMOTE_ADDR"] . "|1\n");
+                    } else io_saveFile($achelper->counterFN($page, '.ip'), $clientIP . "|1\n");
                 }
             }
 
