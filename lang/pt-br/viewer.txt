@@ -1,0 +1,11 @@
+As páginas que você especificou estão mostradas abaixo.
+
+Você pode excluir spammers do contador (é necessário o Plugin StopForumSpam2) ou excluir os dados do log.
+
+Marque as caixas de seleção correspondentes ao registro que você deseja manipular, escolha "Verificação de Spammer" ou "Excluir o registro" no menu suspenso e clique no botão "Executar". Se você não fizer nada, poderá fechar esta página agora.
+
+[OBSERVAÇÃO] Se você clicar no botão "Executar", o sistema começará a verificar ou excluir **sem aviso prévio**.
+
+[OBSERVAÇÃO] Se você usar a função Verificação de Spammer, defina antes os valores "sfsExFreq" e "sfsExConf" no Gerenciador de Configuração.
+
+[OBSERVAÇÃO] A função Verificação de Spammer precisa de conexão com api.stopforumspam.org. Se você especificar muitas páginas para a verificação de spammer por vez, o sistema poderá demorar um pouco para concluir a função.

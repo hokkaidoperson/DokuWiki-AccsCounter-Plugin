@@ -18,3 +18,4 @@ $lang['excludeMgAndSp_o_mg']    ='Don\'t count managers (including superusers)';
 $lang['saveLog_o_0'] = 'Don\'t save';
 $lang['saveLog_o_ppage'] = 'Save (Don\'t make files for every date)';
 $lang['saveLog_o_pdate'] = 'Save (Make files for every date)';
+$lang['ipgdpr'] = 'Should the IP addresses be anonymized in order to meet the requirements of the GDPR?<br>In order to obtain the IP from spammers or BOTs, deactivate this function and then reactivate it, as well as delete / clean the logs from the server with an FTP program. The detection of BOTs and spammers is possible despite the activated function.';

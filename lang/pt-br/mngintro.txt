@@ -1,0 +1,20 @@
+Aqui você pode visualizar e gerenciar dados de log salvos por este plugin.
+
+Depois de selecionar a ação no menu a seguir, para cada página, você verá:
+
+   * O número de visualizações de página (PV) desde o nascimento da página até agora
+   * A data em que a página foi acessada pela última vez
+   * O número do PV de hoje
+   * O número do PV de ontem
+   * O endereço IP do visitante que acessou a página pela última vez
+
+[ATENÇÃO] Esta ferramenta pode lidar com muitos arquivos de log de cada vez; portanto, pode demorar um pouco para mostrar o resultado.
+
+===== Menu de Função =====
+   * [[?do=admin&page=accscounter&action=mng&mode=existente|Mostrar o log de páginas existentes]]
+
+   * [[?do=admin&page=accscounter&action=mng&mode=deletado|Mostrar o log de páginas inexistentes]]
+
+   * [[?do=admin&page=accscounter&action=mng&mode=all|Mostrar o log de todas as páginas (incluindo páginas inexistentes)]]
+
+Ou pesquise os nomes das páginas ou espaços de nomes com a caixa de texto abaixo (esta função de pesquisa é muito simples).
