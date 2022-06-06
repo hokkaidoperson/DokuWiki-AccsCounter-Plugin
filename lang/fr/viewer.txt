@@ -1,0 +1,11 @@
+Les pages que vous avez spécifiées sont affichées ci-dessous.
+
+Vous pouvez exclure les spammeurs des compteurs (Le greffon [[doku>plugin:stopforumspam2|StopForumSpam2]] est nécessaire), ou supprimer les données du journal.
+
+Cochez les journaux que vous voulez manipuler. Choisissez «Vérification des spammeurs» ou  «Supprimer le journal» dans le menu déroulant, puis cliquez sur le bouton «Exécuter». Si vous ne voulez rien faire, vous pouvez fermer cette page maintenant.
+
+NB\\ Si vous choisissez «Exécuter», le système commencera à vérifier ou à supprimer **sans avertissement**.
+
+NB 2\\ Si vous utilisez la fonction de vérification des spammeurs, fixez préalablement les valeurs de "sfsExFreq" et "sfsExConf" dans le gestionnaire de configuration.
+
+NB 3\\ La fonction de vérification des spammeur nécessite une connexion à api.stopforumspam.org. Si vous spécifiez de nombreuses pages pour la vérification de spammeurs, l'accomplissement de cette fonction pourrait prendre un bon moment.

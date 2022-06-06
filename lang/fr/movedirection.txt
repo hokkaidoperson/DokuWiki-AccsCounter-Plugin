@@ -1,0 +1,14 @@
+====== Compteur d'accès - Transferte de données ======
+
+Le dossier de sauvegarde des fichier journaux de ce greffon a changé, pour être compatible avec d'autres greffons, comme le greffon [[https://www.dokuwiki.org/plugin:farmer|Farmer]], et pour simplifier la désinstallation.
+
+Les anciens journaux sont toujours stockés dans l'ancien dossier. Veuillez décider quoi faire de ces fichiers.
+
+===== Attention =====
+
+**Veuillez être attentif, dès que vous cliquez sur l'un des liens, le système commencera - __déplacer ou supprimer sans avertissements__.\\ Cela écrasera les __tous les fichiers__ dans la nouvelle destination.\\ Aussi, je vous recommande de sauvegarder les fichiers préalablement.**
+
+===== Menu des actions =====
+
+  * [[?do=accscounter_datatransfer&mode=move|Déplacer les fichiers vers la nouvelle destination]]
+  * [[?do=accscounter_datatransfer&mode=delete|Ne pas déplacer les fichiers, simplement les détruire]]

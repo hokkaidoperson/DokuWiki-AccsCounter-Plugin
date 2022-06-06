@@ -1,0 +1,8 @@
+Aucune données trouvées
+
+  * le compteur d'accès n'est peut-être pas installé. L'installer dans la barre latérale l'installe pour toutes les pages.
+  * N'oubliez pas d'ajouter ''%%~~NOCACHE~~%%'' dans la page où vous déposez le compteur,
+  * Même si les compteurs sont proprement installés, les journaux peuvent ne pas être créés dans certaines situations
+  * Si vous recherchez le fichier journal avec un mot-clé, modifiez votre requête.
+
+----

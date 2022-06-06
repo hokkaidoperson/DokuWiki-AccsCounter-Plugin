@@ -1,0 +1,22 @@
+Ici, vous pouvez visualiser et gérer les données de journalisation enregistrées par ce greffon.
+
+Après avoir sélectionné l'action depuis le menu ci-dessous, vous verrez pour chaque page :
+
+  * Le nombres de vues de la page depuis sa naissance jusqu'à maintenant,
+  * la date de dernier accès de la page,
+  * le nombre de vues de ce jour,
+  * le nombre de vues d'hier,
+  * l'adresse IP du dernier visiteur à accéder la page.
+
+**NB**\\
+Cet outil peut devoir manipuler un grand nombre de fichiers journaux à la fois, et donc prendre un bon moment pour afficher le résultat.
+
+===== Menu des fonctions =====
+
+* [[?do=admin&page=accscounter&action=mng&mode=existing|Afficher le journal des pages existantes]]
+
+  * [[?do=admin&page=accscounter&action=mng&mode=deleted|Afficher le journal des pages inexistantes]]
+
+  * [[?do=admin&page=accscounter&action=mng&mode=all|Afficher le journal de toutes les pages (y compris des pages existantes)]]
+
+Ou chercher les noms de pages ou de catégories avec l'outil de recherche ci-dessous (Cet outil est très simple.)
