@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Daniel Dias Rodrigues <danieldiasr@gmail.com>
  * @author Schopf <pschopf@gmail.com>
  */
 $lang['timezone']              = 'Fuso horário usado para atualização do dia (se vazio, o fuso horário definido para o servidor será usado. Você pode especificar um dos IDs em <a href="http://php.net/manual/en/timezones.php" target="_ blank"> "Lista de fusos horários suportados" no Manual do PHP (clique para abrir uma nova janela com a página)</a>.)';
@@ -23,3 +24,4 @@ $lang['excludeMgAndSp_o_mg']   = 'Não contar gerenciadores (incluindo superusu�
 $lang['saveLog_o_0']           = 'Não salvar';
 $lang['saveLog_o_ppage']       = 'Salvar (Não criar arquivos para cada data)';
 $lang['saveLog_o_pdate']       = 'Salvar (Vriar arquivos para cada data)';
+$lang['ipgdpr']                = 'Os endereços IP devem ser anonimizados para atender aos requisitos do GDPR?<br>Para obter o IP de spammers ou BOTs, desative esta função e reative-a, bem como exclua / limpe os logs do servidor com um programa FTP. A detecção de BOTs e spammers é possível apesar da função ativada.';
