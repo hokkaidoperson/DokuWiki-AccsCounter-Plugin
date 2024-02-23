@@ -102,12 +102,12 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
                 }
                 unset($part); // Break the reference with the last element
                 $reversedIP = implode(".", array_reverse($ingr));
-                // // Compose a "cc.wariate.jp" DNS address
+                // Compose a "cc.wariate.jp" DNS address
                 $dnsaddr = $reversedIP . ".ip6.arpa";
             } else {
                 // Assume IPv4 if not IPv6
                 $ingr = explode(".", $clientIP);
-                // // Compose a "cc.wariate.jp" DNS address
+                // Compose a "cc.wariate.jp" DNS address
                 $dnsaddr = $ingr[3] . "." . $ingr[2] . "." . $ingr[1] . "." . $ingr[0] . ".in-addr.arpa";
             }
 
