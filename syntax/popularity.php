@@ -48,13 +48,15 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
     }
 
     function render($mode, Doku_Renderer $renderer, $data) {
-        define('PLUGIN_POPULAR_DEFAULT', 10);
+        // Should only define the constant once
+        (!defined('PLUGIN_POPULAR_DEFAULT')) ? define('PLUGIN_POPULAR_DEFAULT', 10) : null;
 
         // Get the time zone from conf (if null, it will use the default setting on your server)
         if ($this->getConf('timezone') != '') date_default_timezone_set($this->getConf('timezone'));
 
         // Get current time (local)
-        define('CURRENT', time());
+        // Should only define the constant once
+        (!defined('CURRENT')) ? define('CURRENT', time()) : null;
 
         $achelper = plugin_load('helper','accscounter');
 

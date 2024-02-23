@@ -357,7 +357,8 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         if ($this->getConf('timezone') != '')  date_default_timezone_set($this->getConf('timezone'));
 
         // Get current time (local)
-        define('CURRENT', time());
+        // Should only define the constant once
+        (!defined('CURRENT')) ? define('CURRENT', time()) : null;
 
 
         // Main process
