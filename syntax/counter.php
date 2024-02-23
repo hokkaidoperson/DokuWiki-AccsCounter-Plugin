@@ -91,9 +91,25 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
             // Get a country code related to the user
             // Ingredients to generate a DNS address
-            $ingr = explode(".", $clientIP);
-            // Compose a "cc.wariate.jp" DNS address
-            $dnsaddr = $ingr[3] . "." . $ingr[2] . "." . $ingr[1] . "." . $ingr[0] . ".cc.wariate.jp";
+            // Support for IPv6 requires a different approach
+            // Check if the IP is IPv6
+            if (filter_var($clientIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                // For IPv6, reverse the entire address
+                $ingr = explode(":", $clientIP);
+                // Pad each section to ensure it's fully represented
+                foreach ($ingr as &$part) {
+                    $part = str_pad($part, 4, '0', STR_PAD_LEFT);
+                }
+                unset($part); // Break the reference with the last element
+                $reversedIP = implode(".", array_reverse($ingr));
+                // // Compose a "cc.wariate.jp" DNS address
+                $dnsaddr = $reversedIP . ".ip6.arpa";
+            } else {
+                // Assume IPv4 if not IPv6
+                $ingr = explode(".", $clientIP);
+                // // Compose a "cc.wariate.jp" DNS address
+                $dnsaddr = $ingr[3] . "." . $ingr[2] . "." . $ingr[1] . "." . $ingr[0] . ".in-addr.arpa";
+            }
 
             // Investigate now
             $dnsdatas = dns_get_record($dnsaddr, DNS_TXT);
