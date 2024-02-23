@@ -81,6 +81,7 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
             $thisday = date('Y/m/d');
             break;
         default:
+            $period = 'err3'; // 'Invalid period specified.
             $renderer->doc .= htmlspecialchars($this->getLang('err3'));
             return;
         }
@@ -109,13 +110,18 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
             $today_count = rtrim($array[2]);
             $yesterday_count = rtrim($array[3]);
 
-            if ($today) {
-                if (($today == $date) and ($today_count != 0)) $counters[$page] = $today_count;
-            } else if ($yesterday) {
-                if (($yesterday == $date) and ($today_count != 0)) $counters[$page] = $today_count;
-                if (($thisday == $date) and ($yesterday_count != 0)) $counters[$page] = $yesterday_count;
-            } else {
-                $counters[$page] = $count;
+            // Only defined variables should be used, so we need to the period variable
+            switch ($period) {
+                case 'today':
+                    if (($today == $date) and ($today_count != 0)) $counters[$page] = $today_count;
+                    break;
+                case 'yesterday':
+                    if (($yesterday == $date) and ($today_count != 0)) $counters[$page] = $today_count;
+                    if (($thisday == $date) and ($yesterday_count != 0)) $counters[$page] = $yesterday_count;
+                    break;
+                default:
+                    $counters[$page] = $count;
+                    return;
             }
         }
 
