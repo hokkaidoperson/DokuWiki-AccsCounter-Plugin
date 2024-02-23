@@ -82,7 +82,8 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
             return;
         }
 
-        $except = '|' . $data[2] . '|';
+        // Can only use the variable if it is defined
+        isset($data[2]) ? $except = '|' . $data[2] . '|' : $except = '|';
 
         $counters = array();
 

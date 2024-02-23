@@ -113,7 +113,8 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
             // Investigate now
             $dnsdatas = dns_get_record($dnsaddr, DNS_TXT);
-            if ($dnsdatas !== FALSE) $hiscountry = $dnsdatas[0]["txt"]; else $hiscountry = FALSE;
+            // Can only use the variable if it is defined
+            if ($dnsdatas !== FALSE && !empty($dnsdatas)) $hiscountry = $dnsdatas[0]["txt"]; else $hiscountry = FALSE;
 
             // Check now
             if ($hiscountry !== FALSE) {
@@ -378,7 +379,8 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         if (gettype($counter) == "string") {
             $renderer->doc .= $counter;
         } else if ($counter[$arg] <= 1) {
-            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars($data[1]);
+            // Can only use the variable if it is defined
+            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars(isset($data[1])?$data[1]:'');
         } else {
             $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars($data[2]);
         }
