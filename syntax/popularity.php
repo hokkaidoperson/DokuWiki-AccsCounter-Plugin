@@ -68,7 +68,8 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
 
         if ($data[0] != null) $max = $data[0];
 
-        switch ($data[1]) {
+        // Only defined variables should be used from PHP 5.0.5
+        switch (isset($data[1]) ? $data[1] : null) {
         case ''         : /*FALLTHROUGH*/
         case 'allperiod': $period = 'allperiod';
             break;
