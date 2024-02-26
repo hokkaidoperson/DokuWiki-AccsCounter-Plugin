@@ -381,7 +381,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         } else if ($counter[$arg] <= 1) {
             $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars(isset($data[1])?$data[1]:'');
         } else {
-            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars($data[2]);
+            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars(isset($data[1])?$data[2]:'');
         }
 
     }
