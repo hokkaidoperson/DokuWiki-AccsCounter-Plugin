@@ -91,13 +91,30 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
 
             // Get a country code related to the user
             // Ingredients to generate a DNS address
-            $ingr = explode(".", $clientIP);
-            // Compose a "cc.wariate.jp" DNS address
-            $dnsaddr = $ingr[3] . "." . $ingr[2] . "." . $ingr[1] . "." . $ingr[0] . ".cc.wariate.jp";
+            // Support for IPv6 requires a different approach
+            // Check if the IP is IPv6
+            if (filter_var($clientIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                // For IPv6, reverse the entire address
+                $ingr = explode(":", $clientIP);
+                // Pad each section to ensure it's fully represented
+                foreach ($ingr as &$part) {
+                    $part = str_pad($part, 4, '0', STR_PAD_LEFT);
+                }
+                unset($part); // Break the reference with the last element
+                $reversedIP = implode(".", array_reverse($ingr));
+                // Compose a "cc.wariate.jp" DNS address
+                $dnsaddr = $reversedIP . ".ip6.arpa";
+            } else {
+                // Assume IPv4 if not IPv6
+                $ingr = explode(".", $clientIP);
+                // Compose a "cc.wariate.jp" DNS address
+                $dnsaddr = $ingr[3] . "." . $ingr[2] . "." . $ingr[1] . "." . $ingr[0] . ".in-addr.arpa";
+            }
 
             // Investigate now
             $dnsdatas = dns_get_record($dnsaddr, DNS_TXT);
-            if ($dnsdatas !== FALSE) $hiscountry = $dnsdatas[0]["txt"]; else $hiscountry = FALSE;
+            // Can only use the variable if it is defined
+            if ($dnsdatas !== FALSE && !empty($dnsdatas)) $hiscountry = $dnsdatas[0]["txt"]; else $hiscountry = FALSE;
 
             // Check now
             if ($hiscountry !== FALSE) {
@@ -340,7 +357,7 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         if ($this->getConf('timezone') != '')  date_default_timezone_set($this->getConf('timezone'));
 
         // Get current time (local)
-        define('CURRENT', time());
+        (!defined('CURRENT')) ? define('CURRENT', time()) : null;
 
 
         // Main process
@@ -362,9 +379,9 @@ class syntax_plugin_accscounter_counter extends DokuWiki_Syntax_Plugin {
         if (gettype($counter) == "string") {
             $renderer->doc .= $counter;
         } else if ($counter[$arg] <= 1) {
-            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars($data[1]);
+            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars(isset($data[1])?$data[1]:'');
         } else {
-            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars($data[2]);
+            $renderer->doc .= htmlspecialchars($counter[$arg]) .htmlspecialchars(isset($data[1])?$data[2]:'');
         }
 
     }

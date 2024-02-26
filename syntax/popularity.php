@@ -48,13 +48,13 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
     }
 
     function render($mode, Doku_Renderer $renderer, $data) {
-        define('PLUGIN_POPULAR_DEFAULT', 10);
+        (!defined('PLUGIN_POPULAR_DEFAULT')) ? define('PLUGIN_POPULAR_DEFAULT', 10) : null;
 
         // Get the time zone from conf (if null, it will use the default setting on your server)
         if ($this->getConf('timezone') != '') date_default_timezone_set($this->getConf('timezone'));
 
         // Get current time (local)
-        define('CURRENT', time());
+        (!defined('CURRENT')) ? define('CURRENT', time()) : null;
 
         $achelper = plugin_load('helper','accscounter');
 
@@ -66,7 +66,7 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
 
         if ($data[0] != null) $max = $data[0];
 
-        switch ($data[1]) {
+        switch (isset($data[1]) ? $data[1] : null) {
         case ''         : /*FALLTHROUGH*/
         case 'allperiod': $period = 'allperiod';
             break;
@@ -78,11 +78,12 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
             $thisday = date('Y/m/d');
             break;
         default:
+            $period = 'err3'; // 'Invalid period specified.
             $renderer->doc .= htmlspecialchars($this->getLang('err3'));
             return;
         }
 
-        $except = '|' . $data[2] . '|';
+        isset($data[2]) ? $except = '|' . $data[2] . '|' : $except = '|';
 
         $counters = array();
 
@@ -105,19 +106,22 @@ class syntax_plugin_accscounter_popularity extends DokuWiki_Syntax_Plugin {
             $today_count = rtrim($array[2]);
             $yesterday_count = rtrim($array[3]);
 
-            if ($today) {
-                if (($today == $date) and ($today_count != 0)) $counters[$page] = $today_count;
-            } else if ($yesterday) {
-                if (($yesterday == $date) and ($today_count != 0)) $counters[$page] = $today_count;
-                if (($thisday == $date) and ($yesterday_count != 0)) $counters[$page] = $yesterday_count;
-            } else {
-                $counters[$page] = $count;
+            switch ($period) {
+                case 'today':
+                    if (($today == $date) and ($today_count != 0)) $counters[$page] = $today_count;
+                    break;
+                case 'yesterday':
+                    if (($yesterday == $date) and ($today_count != 0)) $counters[$page] = $today_count;
+                    if (($thisday == $date) and ($yesterday_count != 0)) $counters[$page] = $yesterday_count;
+                    break;
+                default:
+                    $counters[$page] = $count;
+                    return;
             }
         }
 
         asort($counters, SORT_NUMERIC);
 
-        // BugTrack2/106: Only variables can be passed by reference from PHP 5.0.5
         $counters = array_reverse($counters, TRUE); // with array_splice()
         $counters = array_splice($counters, 0, $max);
 
